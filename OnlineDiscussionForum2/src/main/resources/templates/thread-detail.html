@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thread Detail</title>
+    <link rel="stylesheet" type="text/css" href="/css/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Thread Detail</h1>
+    <div class="thread-content">
+        <!-- Display thread details -->
+        <p class="thread-date">Date: <span th:text="${#dates.format(threadDetail.date, 'dd/MM/yyyy HH:mm')}"></span></p>
+        <p class="thread-content" th:text="${threadDetail.content}"></p>
+    </div>
+</div>
+</body>
+</html>

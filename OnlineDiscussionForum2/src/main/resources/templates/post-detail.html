@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Post Detail</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background-color: #fff;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .post-content {
+      margin-bottom: 20px;
+      padding: 15px;
+      background-color: #f9f9f9;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .post-title {
+      font-size: 24px;
+      margin-bottom: 10px;
+      color: #333;
+    }
+    .post-date {
+      color: #666;
+    }
+    .post-description {
+      margin-bottom: 10px;
+      color: #777;
+    }
+    .add-thread-btn {
+      text-align: center;
+      margin-top: 20px;
+    }
+    .thread-container {
+      margin-top: 20px;
+    }
+    .thread {
+      border: 1px solid #ccc;
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+    .thread-content {
+      color: #333;
+    }
+    .thread-textbox {
+      display: none;
+      margin-top: 20px;
+    }
+    #threadContent {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    #saveThreadBtn {
+      display: block;
+      width: 100%;
+      padding: 10px;
+      background-color: #007bff;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1 class="post-title" th:text="${post.title}"></h1>
+  <div class="post-content">
+    <!-- Display post details -->
+    <span class="post-id">ID: <span th:text="${post.id}"></span></span><br>
+    <h2 class="post-title" th:text="${post.title}"></h2>
+    <p class="post-date">Date: <span th:text="${#dates.format(post.date, 'dd/MM/yyyy HH:mm')}"></span></p>
+    <p class="post-description" th:text="${post.description}"></p>
+  </div>
+
+  <!-- Display all threads -->
+  <div class="thread-container">
+    <h2>Discussion</h2>
+    <div th:each="thread : ${post.threads}" class="thread">
+      <p class="thread-content" th:text="${thread.content}"></p>
+    </div>
+  </div>
+
+  <!-- Add button to open thread textbox -->
+  <div class="add-thread-btn">
+    <button id="addThreadBtn">Post comment</button>
+  </div>
+
+  <!-- Thread textbox -->
+  <div class="thread-textbox" style="display: none;">
+    <form id="threadForm" action="/api/posts/posts/{postId}/threads/new" method="post">
+      <textarea id="threadContent" name="content" rows="4" cols="50" placeholder="Enter your comment"></textarea>
+      <input type="submit" value="Post comment">
+    </form>
+  </div>
+</div>
+
+<script>
+  document.getElementById('addThreadBtn').addEventListener('click', function() {
+    // Toggle display of thread textbox
+    document.querySelector('.thread-textbox').style.display = 'block';
+  });
+
+  document.getElementById('threadForm').addEventListener('submit', function(event) {
+    event.preventDefault(); // Prevent the default form submission
+
+    // Get thread content
+    var threadContent = document.getElementById('threadContent').value;
+
+    // Get post ID
+    var postId = document.querySelector('.post-id span').textContent;
+
+    // Send form data to server
+    var formData = new FormData(this);
+    formData.append('postId', postId); // Append post ID to the form data
+
+    fetch('/api/posts/posts/' + postId + '/threads/new', {
+      method: 'POST',
+      body: formData
+    })
+            .then(response => {
+              if (response.ok) {
+                // alert('Thread saved successfully');
+                location.reload(); // Reload the page to show the new thread
+              } else {
+                throw new Error('Error posting comment');
+              }
+            })
+            .catch(error => {
+              alert(error.message);
+            });
+  });
+
+  // Log thread content and elements to console
+  var threads = document.querySelectorAll('.thread-content');
+  threads.forEach(function(thread) {
+    console.log(thread.textContent);
+  });
+
+  var threads1 = document.querySelectorAll('.thread');
+  threads1.forEach(function(thread) {
+    console.log(thread);
+  });
+
+</script>
+</body>
+</html>

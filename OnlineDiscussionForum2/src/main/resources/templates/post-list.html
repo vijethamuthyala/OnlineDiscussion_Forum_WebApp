@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Discussion Topics List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+        .post-id {
+            font-weight: bold;
+            color: #007bff;
+        }
+        .post-date {
+            color: #666;
+        }
+        .post-title {
+            font-size: 20px;
+            margin-bottom: 5px;
+            color: #333;
+        }
+        .post-description {
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Discussion Topics List</h1>
+    <ul>
+        <!-- Loop through each post and display its ID, date, title, and description -->
+        <li th:each="post : ${posts}">
+            <span class="post-id">ID: <span th:text="${post.id}"></span></span><br>
+            <span class="post-date">Date: <span th:text="${#dates.format(post.date, 'dd/MM HH:mm')}"></span></span><br>
+            <!-- Add hyperlink to the post title -->
+            <span class="post-title">
+                    <a th:href="@{'/api/posts/post/' + ${post.id}}" target="_blank"><span th:text="${post.title}"></span></a>
+                </span><br>
+            <span class="post-description" th:text="${post.description}"></span>
+        </li>
+    </ul>
+</div>
+</body>
+</html>
